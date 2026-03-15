@@ -21,4 +21,4 @@
 使用 SSH 登录到你的服务器，并以 root 身份执行以下命令：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/你的用户名/仓库名/main/你的脚本名.sh | bash
+curl -fsSL https://raw.githubusercontent.com/starshine369/caddy-ip-redirector/main/install.sh | bash
