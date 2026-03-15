@@ -2,7 +2,7 @@
 
 # ====================================================
 # Caddy 纯伪装重定向一键脚本 (无证书版)
-# 适用系统：Debian / Ubuntu (纯净版)
+# 适用系统：Debian / Ubuntu
 # ====================================================
 
 set -e
@@ -15,7 +15,7 @@ fi
 
 # 🔍 1. 自动检测环境与 IP
 echo "🔍 正在进行系统环境测绘..."
-SERVER_IP=$(curl -s https://api.ipify.org)
+SERVER_IP=$(curl -s https://api.ipify.org || curl -s https://ifconfig.me)
 if [ -z "$SERVER_IP" ]; then
     echo "❌ 错误：无法获取公网 IP，请检查网络连接。"
     exit 1
@@ -23,7 +23,8 @@ fi
 
 # 📧 2. 交互式获取伪装信息
 echo "----------------------------------------------------"
-read -p "🌐 请输入伪装域名 [默认: www.tesla.com]: " FAKE_DOMAIN </dev/tty
+printf "🌐 请输入伪装域名 [默认: www.tesla.com]: "
+read -r FAKE_DOMAIN </dev/tty
 
 # 如果用户未输入内容，则默认赋予 www.tesla.com
 FAKE_DOMAIN=${FAKE_DOMAIN:-www.tesla.com}
@@ -32,7 +33,9 @@ echo "----------------------------------------------------"
 echo "🚀 目标 IP: $SERVER_IP"
 echo "🌐 伪装目标: $FAKE_DOMAIN"
 echo "----------------------------------------------------"
-read -p "确认以上信息无误？(y/n): " CONFIRM </dev/tty
+printf "确认以上信息无误？(y/n): "
+read -r CONFIRM </dev/tty
+
 if [ "$CONFIRM" != "y" ]; then
     echo "❌ 操作取消。"
     exit 1
@@ -40,7 +43,6 @@ fi
 
 # 🛠️ 3. 环境依赖安装
 echo "--- 正在安装环境依赖 ---"
-# 移除了 socat 和 cron 等 acme.sh 专属依赖
 apt update && apt install -y curl sudo debian-keyring debian-archive-keyring apt-transport-https
 
 # 🧠 4. 部署 Caddy 门卫
